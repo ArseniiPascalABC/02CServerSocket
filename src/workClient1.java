@@ -9,25 +9,50 @@ public class workClient1 {
 
     public static void main(String[] args) {
         try {
-            try {
-                clientSocket = new Socket("localhost", 0001);
-                reader = new BufferedReader(new InputStreamReader(System.in));
-                in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                System.out.println("Ваше Имя? :");
-                String word = reader.readLine();
-                out.write(word + "\n");
-                out.flush();
-                String serverWord = in.readLine();
-                System.out.println(serverWord);
-            } finally {
-                System.out.println("Клиент был закрыт...");
-                clientSocket.close();
-                in.close();
-                out.close();
+            clientSocket = new Socket("localhost", 0001);
+            reader = new BufferedReader(new InputStreamReader(System.in));
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
+            System.out.println("Ваше Имя? :");
+            String username = reader.readLine();
+            out.write(username + "\n");
+            out.flush();
+            String serverWord = in.readLine();
+            System.out.println(serverWord);
+            boolean x = true;
+            String word;
+            while(x){
+                System.out.println("Введите слово: ");
+                word = reader.readLine();
+                if((username.equals("admin")) && (word.equals("exit"))){
+                    out.write(word+"\n");
+                    System.out.println("Пока " + username);
+                    out.flush();
+                    out.close();
+                    in.close();
+                    clientSocket.close();
+                    break;
+                }
+                else if(word.equals("bye")){
+                    out.write("bye\n");
+                    out.flush();
+                    System.out.println("Клиент был закрыт...");
+                    x = false;
+                }
+                else{
+                    out.write(word + "\n");
+                    out.flush();
+                    serverWord = in.readLine();
+                    System.out.println(serverWord);
+                }
             }
+            clientSocket.close();
+            in.close();
+            out.close();
+
         } catch (IOException e) {
-            System.err.println(e);
+            throw new RuntimeException(e);
         }
     }
 }
