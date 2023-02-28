@@ -26,7 +26,7 @@ public class workClient1 {
                 System.out.println("Введите слово: ");
                 word = reader.readLine();
                 if((username.equals("admin")) && (word.equals("exit"))){
-                    out.write(word+"\n");
+                    out.write(word + "\n");
                     System.out.println("Пока " + username);
                     out.flush();
                     out.close();

@@ -59,7 +59,6 @@ public class workServerOptimaze {
                     out.flush();
                     out.close();
                     clientSocket.close();
-
                 }
             }
         } catch (IOException e){
