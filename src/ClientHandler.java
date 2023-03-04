@@ -2,64 +2,53 @@ import java.io.*;
 import java.net.Socket;
 
 class ClientHandler implements Runnable {
-    static BufferedReader in;
-    static BufferedWriter out;
     static String username;
     private final Socket clientSocket;
+    int counter;
 
     // Constructor
-    public ClientHandler(Socket socket)
+    public ClientHandler(Socket socket, int counter)
     {
         this.clientSocket = socket;
+        this.counter = counter;
     }
 
     public void run() {
         BufferedWriter out = null;
         BufferedReader in = null;
-
         try {
             out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String word;
+            String word = "";
             int j;
-            boolean x = true;
-            while (x) {
+            while (true) {
                 j = 1;
                 username = in.readLine();
-                System.out.println("К нам пришел " + username);
                 out.write("Привет, " + username + "\n");
                 out.flush();
-
-                word = in.readLine();
-                if (!word.equals("bye")) {
-                    while (!word.equals("bye")) {
-                        if ((word.equals("exit")) && (username.equals("admin"))) {
-                            out.flush();
-                            in.close();
-                            out.close();
-                            System.out.println("Пока " + username);
-                            clientSocket.close();
-                            System.out.println("Сервер закрыт");
-                            System.exit(0);
-                        } else {
-                            System.out.println("Получено сообщение: " + word);
-                            out.write(j + " " + word + "\n");
-                            out.flush();
-                            j++;
-                            word = in.readLine();
-                        }
+                while (!"bye".equalsIgnoreCase(word = in.readLine())){
+                    if ((word.equals("exit")) && (counter == 1)) {
+                        out.flush();
+                        in.close();
+                        out.close();
+                        System.out.println("Пока " + username);
+                        clientSocket.close();
+                        System.out.println("Сервер закрыт");
+                        System.exit(0);
+                    } else {
+                        System.out.println("Получено сообщение от пользователя № " + counter + ": " + word);
+                        out.write(j + " " + word + "\n");
+                        out.flush();
+                        j++;
+                        word = in.readLine();
                     }
                 }
-                else{
-                    System.out.println("Пока " + username);
-                    in.close();
-                    out.flush();
-                    out.close();
-                    clientSocket.close();
-                    x = false;
-                }
+                System.out.println("Пока " + username);
+                in.close();
+                out.flush();
+                out.close();
+                clientSocket.close();
             }
-            clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
