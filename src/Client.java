@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 
-public class workClient1 {
+public class Client {
     private static Socket clientSocket;
     private static BufferedReader reader;
     private static BufferedReader in;
@@ -52,7 +52,7 @@ public class workClient1 {
             out.close();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
