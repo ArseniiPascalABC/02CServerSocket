@@ -5,8 +5,9 @@ class ClientHandler implements Runnable {
     static String username;
     private final Socket clientSocket;
     int counter;
+    BufferedWriter out = null;
+    BufferedReader in = null;
 
-    // Constructor
     public ClientHandler(Socket socket, int counter)
     {
         this.clientSocket = socket;
@@ -14,8 +15,7 @@ class ClientHandler implements Runnable {
     }
 
     public void run() {
-        BufferedWriter out = null;
-        BufferedReader in = null;
+        String arr[] = new String[10];
         try {
             out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -24,33 +24,35 @@ class ClientHandler implements Runnable {
             while (true) {
                 j = 1;
                 username = in.readLine();
+                arr[counter] = username;
                 out.write("Привет, " + username + "\n");
                 out.flush();
-                while (!"bye".equalsIgnoreCase(word = in.readLine())){
-                    if ((word.equals("exit")) && (counter == 1)) {
+                word = in.readLine();
+                while (!word.equals("bye")){
+                    if ((word.equals("exit")) && (arr[counter].equals("admin"))) {
                         out.flush();
                         in.close();
                         out.close();
                         System.out.println("Пока " + username);
                         clientSocket.close();
+
                         System.out.println("Сервер закрыт");
                         System.exit(0);
+                        break;
                     } else {
-                        System.out.println("Получено сообщение от пользователя № " + counter + ": " + word);
+                        System.out.println("Получено сообщение от пользователя №" + counter + "(" + arr[counter]  + "): " + word);
                         out.write(j + " " + word + "\n");
                         out.flush();
                         j++;
                         word = in.readLine();
                     }
                 }
-                System.out.println("Пока " + username);
-                in.close();
                 out.flush();
                 out.close();
-                clientSocket.close();
+                in.close();
+                System.out.println("Пока " + arr[counter]);
             }
         } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             try {
                 if (out != null) {

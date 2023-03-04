@@ -3,11 +3,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 public class workServerOptimaze {
     static Socket clientSocket;
-
-    public static void main(String[] args){
+    static ServerSocket serverSocket = null;
+    public static void main(String[] args) {
         int counter = 0;
         try {
-            ServerSocket serverSocket = new ServerSocket(0001);
+            serverSocket = new ServerSocket(0001);
             serverSocket.setReuseAddress(true);
             System.out.println("Запустили сервер");
             while (true) {
@@ -19,6 +19,15 @@ public class workServerOptimaze {
             }
         }catch (IOException e){
             System.err.println(e);
+        } finally {
+            if (serverSocket != null) {
+                try {
+                    serverSocket.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

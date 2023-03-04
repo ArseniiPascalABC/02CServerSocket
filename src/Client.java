@@ -24,10 +24,20 @@ public class Client {
             while(true){
                 System.out.println("Введите слово: ");
                 word = reader.readLine();
-                out.write( word + "\n");
+                out.write(word + "\n");
                 out.flush();
-                serverWord = in.readLine();
-                System.out.println(serverWord);
+                if ((word.equals("bye"))||(word.equals("exit") && username.equals("admin"))){
+                    clientSocket.close();
+                    in.close();
+                    out.flush();
+                    out.close();
+                    break;
+                }
+                else{
+                    serverWord = in.readLine();
+                    System.out.println(serverWord);
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
